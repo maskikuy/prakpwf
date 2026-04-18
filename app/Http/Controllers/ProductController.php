@@ -4,7 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Models\User;
+use App\Http\Requests\StoreProductRequest;
+use App\Http\Requests\UpdateProductRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Log;
 
 class ProductController extends Controller
 {
@@ -15,18 +20,36 @@ class ProductController extends Controller
         return view('product.index', compact('products'));
     }
 
-    public function store(Request $request)
+    public function store(StoreProductRequest $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'qty' => 'required|integer',
-            'price' => 'required|numeric',
-            'user_id' => 'required|exists:users,id',
-        ]);
+        $validated = $request->validated();
+        $validated['user_id'] = Auth::id();
 
-        $product = Product::create($validated);
+        try {
+            Product::create($validated);
 
-        return redirect()->route('product.index')->with('success', 'Product created successfully.');
+            return redirect()
+                ->route('product.index')
+                ->with('success', 'Product created successfully.');
+        } catch (QueryException $e) {
+            Log::error('Product store database error', [
+                'message' => $e->getMessage(),
+            ]);
+
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with('error', 'Database error while creating product.');
+        } catch (\Throwable $e) {
+            Log::error('Product store unexpected error', [
+                'message' => $e->getMessage(),
+            ]);
+
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with('error', 'Unexpected error occurred.');
+        }
     }
 
     public function create()
@@ -43,18 +66,13 @@ class ProductController extends Controller
         return view('product.view', compact('product'));
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdateProductRequest $request, $id)
     {
         $product = Product::findOrFail($id);
 
         $this->authorize('update', $product);
 
-        $validated = $request->validate([
-            'name' => 'sometimes|string|max:255',
-            'qty' => 'sometimes|integer',
-            'price' => 'sometimes|numeric',
-            'user_id' => 'sometimes|exists:users,id',
-        ]);
+        $validated = $request->validated();
 
         $product->update($validated);
 
