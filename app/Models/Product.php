@@ -12,6 +12,11 @@ class Product extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function getQuantityAttribute()
+    {
+        return $this->qty;
+    }
+
     public function categories() {
         return $this->hasMany(Category::class);
     }

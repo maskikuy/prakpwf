@@ -52,10 +52,10 @@
                                 <label class="block text-sm font-medium mb-1">
                                     Quantity <span class="text-red-500">*</span>
                                 </label>
-                                <input type="number" name="quantity" value="{{ old('quantity') }}"
+                                <input type="number" name="qty" value="{{ old('qty') }}"
                                        min="0"
                                        class="w-full px-4 py-2.5 rounded-lg border text-sm
-                                       {{ $errors->has('quantity')
+                                       {{ $errors->has('qty')
                                             ? 'border-red-400'
                                             : 'border-gray-300 dark:border-gray-600' }}
                                        bg-white dark:bg-gray-700">

@@ -1,22 +1,22 @@
 <x-app-layout>
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+        <div class="w-full mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-slate-950/95 border border-slate-800 shadow-2xl rounded-[32px] overflow-hidden">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
 
                     {{-- Header --}}
-                    <div class="flex items-center justify-between mb-6">
+                    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-6 px-0 py-0 border-b border-slate-800 bg-slate-900/90">
                         <div>
-                            <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-100 tracking-tight">
+                            <h2 class="text-2xl font-semibold text-white tracking-tight">
                                 Product List
                             </h2>
-                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                                Manage your product inventory
+                            <p class="text-sm text-slate-400 mt-1">
+                                Manage your product inventory with a clean, full-width layout.
                             </p>
                         </div>
 
                         <a href="{{ route('product.create') }}"
-                           class="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition duration-150 shadow-sm">
+                           class="inline-flex items-center gap-2 rounded-full bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-lg shadow-indigo-500/20 transition hover:bg-indigo-500">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
                                  stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -28,15 +28,16 @@
 
                     {{-- Flash Message --}}
                     @if (session('success'))
-                        <div class="mb-4 px-4 py-3 bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-700 text-green-700 dark:text-green-300 rounded-lg text-sm">
+                        <div class="mb-4 px-4 py-3 bg-emerald-900/70 border border-slate-800 text-emerald-200 rounded-lg text-sm">
                             {{ session('success') }}
                         </div>
                     @endif
 
                     {{-- Table --}}
-                    <div class="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
-                        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-sm">
-                            <thead class="bg-gray-50 dark:bg-gray-700">
+                    <div class="overflow-x-auto px-6 pb-6 pt-4">
+                        <div class="min-w-full overflow-hidden rounded-3xl border border-slate-800 bg-slate-900 shadow-inner shadow-slate-950/20">
+                            <table class="min-w-full divide-y divide-slate-700 text-sm">
+                                <thead class="bg-slate-950 text-slate-300">
                                 <tr>
                                     <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">
                                         #
@@ -59,65 +60,46 @@
                                 </tr>
                             </thead>
 
-                            <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-100 dark:divide-gray-700">
+                            <tbody class="bg-slate-950 divide-y divide-slate-800">
                                 @forelse ($products as $product)
-                                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition">
-                                        <td class="px-6 py-4">
+                                    <tr class="transition hover:bg-slate-900/75">
+                                        <td class="px-6 py-4 text-slate-200">
                                             {{ $loop->iteration }}
                                         </td>
 
-                                        <td class="px-6 py-4 font-medium">
+                                        <td class="px-6 py-4 font-semibold text-white">
                                             {{ $product->name }}
                                         </td>
 
                                         <td class="px-6 py-4">
-                                            <span class="px-2 py-1 text-xs rounded-full font-medium
-                                                {{ $product->quantity > 10
-                                                    ? 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300'
-                                                    : 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300' }}">
+                                            <span class="inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wide {{ $product->quantity > 10 ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800' }}">
                                                 {{ $product->quantity }}
                                             </span>
                                         </td>
 
-                                        <td class="px-6 py-4">
+                                        <td class="px-6 py-4 text-slate-200">
                                             Rp {{ number_format($product->price, 0, ',', '.') }}
                                         </td>
 
-                                        <td class="px-6 py-4">
+                                        <td class="px-6 py-4 text-slate-300">
                                             {{ $product->user->name ?? '-' }}
                                         </td>
 
-                                        <td class="px-6 py-4">
-                                            <div class="flex items-center justify-center gap-2">
-
-                                                {{-- View --}}
-                                                <a href="{{ route('product.show', $product->id) }}"
-                                                   class="text-blue-500 hover:text-blue-700">
-                                                    👁
-                                                </a>
-
-                                                {{-- Edit --}}
-                                                <a href="{{ route('product.edit', $product) }}"
-                                                   class="text-yellow-500 hover:text-yellow-700">
-                                                    ✏️
-                                                </a>
-
-                                                {{-- Delete --}}
-                                                <form action="{{ route('product.delete', $product->id) }}" method="POST"
-                                                      onsubmit="return confirm('Delete this product?')">
+                                        <td class="px-6 py-4 text-center">
+                                            <div class="inline-flex items-center justify-center gap-3 text-base">
+                                                <a href="{{ route('product.show', $product->id) }}" class="text-sky-400 hover:text-sky-300">👁</a>
+                                                <a href="{{ route('product.edit', $product) }}" class="text-amber-400 hover:text-amber-300">✏️</a>
+                                                <form action="{{ route('product.delete', $product->id) }}" method="POST" onsubmit="return confirm('Delete this product?')" class="inline">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button class="text-red-500 hover:text-red-700">
-                                                        🗑
-                                                    </button>
+                                                    <button class="text-rose-400 hover:text-rose-300">🗑</button>
                                                 </form>
-
                                             </div>
                                         </td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="6" class="text-center py-6 text-gray-500">
+                                        <td colspan="6" class="px-6 py-10 text-center text-slate-400">
                                             No products found.
                                         </td>
                                     </tr>
