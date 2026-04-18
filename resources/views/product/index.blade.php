@@ -28,15 +28,9 @@
                                 </a>
                             @endcan
 
-                            <a href="{{ route('product.create') }}"
-                               class="inline-flex items-center gap-2 rounded-full bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-lg shadow-indigo-500/20 transition hover:bg-indigo-500">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
-                                     stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                          d="M12 4v16m8-8H4"/>
-                                </svg>
-                                Add Product
-                            </a>
+                            @can('manage-product')
+                                <x-add-product :url="route('product.create')" name="Product" />
+                            @endcan
                         </div>
                     </div>
 
