@@ -47,6 +47,8 @@ class ProductController extends Controller
     {
         $product = Product::findOrFail($id);
 
+        $this->authorize('update', $product);
+
         $validated = $request->validate([
             'name' => 'sometimes|string|max:255',
             'qty' => 'sometimes|integer',
@@ -70,8 +72,45 @@ class ProductController extends Controller
     {
         $product = Product::findOrFail($id);
 
+        $this->authorize('delete', $product);
+
         $product->delete();
 
         return redirect()->route('product.index')->with('success', 'Product berhasil dihapus');
+    }
+
+    public function export()
+    {
+        $products = Product::all();
+
+        $filename = 'products_' . date('Y-m-d_H-i-s') . '.csv';
+
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+        ];
+
+        $callback = function() use ($products) {
+            $file = fopen('php://output', 'w');
+
+            // Header
+            fputcsv($file, ['ID', 'Name', 'Quantity', 'Price', 'User', 'Created At']);
+
+            // Data
+            foreach ($products as $product) {
+                fputcsv($file, [
+                    $product->id,
+                    $product->name,
+                    $product->quantity,
+                    $product->price,
+                    $product->user->name ?? '-',
+                    $product->created_at,
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 }
