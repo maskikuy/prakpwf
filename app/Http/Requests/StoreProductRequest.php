@@ -24,8 +24,9 @@ class StoreProductRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'qty' => 'required|integer|min:0',
+            'quantity' => 'required|integer|min:0',
             'price' => 'required|numeric|min:0',
+            'category_id' => 'required|exists:categories,id',
         ];
     }
 
@@ -40,12 +41,14 @@ class StoreProductRequest extends FormRequest
             'name.required' => 'Nama produk wajib diisi.',
             'name.string' => 'Nama produk harus berupa teks.',
             'name.max' => 'Nama produk tidak boleh lebih dari 255 karakter.',
-            'qty.required' => 'Jumlah (kuantitas) produk wajib diisi.',
-            'qty.integer' => 'Jumlah produk harus berupa angka bulat (tidak boleh desimal).',
-            'qty.min' => 'Jumlah produk tidak boleh kurang dari 0.',
+            'quantity.required' => 'Jumlah (kuantitas) produk wajib diisi.',
+            'quantity.integer' => 'Jumlah produk harus berupa angka bulat (tidak boleh desimal).',
+            'quantity.min' => 'Jumlah produk tidak boleh kurang dari 0.',
             'price.required' => 'Harga produk wajib diisi.',
             'price.numeric' => 'Harga produk harus berupa angka yang valid.',
             'price.min' => 'Harga produk tidak boleh kurang dari 0.',
+            'category_id.required' => 'Kategori produk wajib dipilih.',
+            'category_id.exists' => 'Kategori yang dipilih tidak valid.',
         ];
     }
 }

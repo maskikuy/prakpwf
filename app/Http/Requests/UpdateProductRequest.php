@@ -24,9 +24,10 @@ class UpdateProductRequest extends FormRequest
     {
         return [
             'name' => 'sometimes|string|max:255',
-            'qty' => 'sometimes|integer|min:0',
+            'quantity' => 'sometimes|integer|min:0',
             'price' => 'sometimes|numeric|min:0',
             'user_id' => 'sometimes|exists:users,id',
+            'category_id' => 'sometimes|exists:categories,id',
         ];
     }
 
@@ -40,11 +41,12 @@ class UpdateProductRequest extends FormRequest
         return [
             'name.string' => 'Nama produk harus berupa teks.',
             'name.max' => 'Nama produk tidak boleh lebih dari 255 karakter.',
-            'qty.integer' => 'Jumlah produk harus berupa angka bulat (tidak boleh desimal).',
-            'qty.min' => 'Jumlah produk tidak boleh kurang dari 0.',
+            'quantity.integer' => 'Jumlah produk harus berupa angka bulat (tidak boleh desimal).',
+            'quantity.min' => 'Jumlah produk tidak boleh kurang dari 0.',
             'price.numeric' => 'Harga produk harus berupa angka yang valid.',
             'price.min' => 'Harga produk tidak boleh kurang dari 0.',
             'user_id.exists' => 'User yang dipilih tidak ada.',
+            'category_id.exists' => 'Kategori yang dipilih tidak valid.',
         ];
     }
 }

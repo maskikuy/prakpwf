@@ -6,18 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
-    protected $fillable = ['name', 'qty', 'price', 'user_id'];
+    protected $fillable = ['name', 'quantity', 'price', 'user_id', 'category_id'];
 
     public function user() {
         return $this->belongsTo(User::class);
     }
 
-    public function getQuantityAttribute()
-    {
-        return $this->qty;
-    }
-
-    public function categories() {
-        return $this->hasMany(Category::class);
+    public function category() {
+        return $this->belongsTo(Category::class);
     }
 }

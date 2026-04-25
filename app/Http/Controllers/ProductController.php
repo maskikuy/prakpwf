@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Models\User;
+use App\Models\Category;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use Illuminate\Http\Request;
@@ -15,7 +16,7 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::all();
+        $products = Product::with(['user', 'category'])->get();
 
         return view('product.index', compact('products'));
     }
@@ -55,13 +56,14 @@ class ProductController extends Controller
     public function create()
     {
         $users = User::orderBy('name')->get();
+        $categories = Category::orderBy('name')->get();
 
-        return view('product.create', compact('users'));
+        return view('product.create', compact('users', 'categories'));
     }
 
     public function show($id)
     {
-        $product = Product::findOrFail($id);
+        $product = Product::with(['user', 'category'])->findOrFail($id);
 
         return view('product.view', compact('product'));
     }
@@ -82,8 +84,9 @@ class ProductController extends Controller
     public function edit(Product $product)
     {
         $users = User::orderBy('name')->get();
+        $categories = Category::orderBy('name')->get();
 
-        return view('product.edit', compact('product', 'users'));
+        return view('product.edit', compact('product', 'users', 'categories'));
     }
 
     public function delete($id)
@@ -99,7 +102,7 @@ class ProductController extends Controller
 
     public function export()
     {
-        $products = Product::all();
+        $products = Product::with(['user', 'category'])->get();
 
         $filename = 'products_' . date('Y-m-d_H-i-s') . '.csv';
 
@@ -112,13 +115,14 @@ class ProductController extends Controller
             $file = fopen('php://output', 'w');
 
             // Header
-            fputcsv($file, ['ID', 'Name', 'Quantity', 'Price', 'User', 'Created At']);
+            fputcsv($file, ['ID', 'Name', 'Category', 'Quantity', 'Price', 'User', 'Created At']);
 
             // Data
             foreach ($products as $product) {
                 fputcsv($file, [
                     $product->id,
                     $product->name,
+                    $product->category->name ?? '-',
                     $product->quantity,
                     $product->price,
                     $product->user->name ?? '-',

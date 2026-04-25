@@ -32,7 +32,7 @@
                         {{-- Name --}}
                         <div>
                             <label class="block text-sm font-medium mb-1">
-                                Product Name <span class="text-red-500">*</span>
+                                Nama Produk <span class="text-red-500">*</span>
                             </label>
                             <input type="text" name="name" value="{{ old('name') }}"
                                    placeholder="e.g. Wireless Headphones"
@@ -46,16 +46,40 @@
                             @enderror
                         </div>
 
+                        {{-- Category --}}
+                        <div>
+                            <label class="block text-sm font-medium mb-1">
+                                Kategori <span class="text-red-500">*</span>
+                            </label>
+                            <select name="category_id"
+                                    class="w-full px-4 py-2.5 rounded-lg border text-sm
+                                    {{ $errors->has('category_id')
+                                        ? 'border-red-400'
+                                        : 'border-gray-300 dark:border-gray-600' }}
+                                    bg-white dark:bg-gray-700">
+                                <option value="">-- Pilih Kategori --</option>
+                                @foreach ($categories as $category)
+                                    <option value="{{ $category->id }}"
+                                        {{ old('category_id') == $category->id ? 'selected' : '' }}>
+                                        {{ $category->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('category_id')
+                                <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+
                         {{-- Quantity & Price --}}
                         <div class="grid grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-sm font-medium mb-1">
                                     Quantity <span class="text-red-500">*</span>
                                 </label>
-                                <input type="number" name="qty" value="{{ old('qty') }}"
+                                <input type="number" name="quantity" value="{{ old('quantity') }}"
                                        min="0"
                                        class="w-full px-4 py-2.5 rounded-lg border text-sm
-                                       {{ $errors->has('qty')
+                                       {{ $errors->has('quantity')
                                             ? 'border-red-400'
                                             : 'border-gray-300 dark:border-gray-600' }}
                                        bg-white dark:bg-gray-700">

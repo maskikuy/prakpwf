@@ -8,28 +8,16 @@
                     <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-6 px-0 py-0 border-b border-slate-800 bg-slate-900/90">
                         <div>
                             <h2 class="text-2xl font-semibold text-white tracking-tight">
-                                Product List
+                                Category List
                             </h2>
                             <p class="text-sm text-slate-400 mt-1">
-                                Manage your product inventory with a clean, full-width layout.
+                                Manage your category with a clean layout.
                             </p>
                         </div>
 
                         <div class="flex items-center gap-3">
-                            @can('export-product')
-                                <a href="{{ route('product.export') }}"
-                                   class="inline-flex items-center gap-2 rounded-full bg-green-600 px-4 py-2 text-sm font-medium text-white shadow-lg shadow-green-500/20 transition hover:bg-green-500">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                                        <polyline points="7,10 12,15 17,10"></polyline>
-                                        <line x1="12" y1="15" x2="12" y2="3"></line>
-                                    </svg>
-                                    Export
-                                </a>
-                            @endcan
-
-                            @can('manage-product')
-                                <x-add-product :url="route('product.create')" name="Product" />
+                            @can('manage-category')
+                                <x-add-product :url="route('category.create')" name="Add Category" />
                             @endcan
                         </div>
                     </div>
@@ -38,6 +26,11 @@
                     @if (session('success'))
                         <div class="mb-4 px-4 py-3 bg-emerald-900/70 border border-slate-800 text-emerald-200 rounded-lg text-sm">
                             {{ session('success') }}
+                        </div>
+                    @endif
+                    @if (session('error'))
+                        <div class="mb-4 px-4 py-3 bg-rose-900/70 border border-slate-800 text-rose-200 rounded-lg text-sm">
+                            {{ session('error') }}
                         </div>
                     @endif
 
@@ -54,57 +47,33 @@
                                         Name
                                     </th>
                                     <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">
-                                        Category
-                                    </th>
-                                    <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">
-                                        Quantity
-                                    </th>
-                                    <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">
-                                        Price
-                                    </th>
-                                    <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">
-                                        User
+                                        Total Product
                                     </th>
                                     <th class="px-6 py-3 text-center text-xs font-semibold uppercase tracking-wider">
-                                        Actions
+                                        Action
                                     </th>
                                 </tr>
                             </thead>
 
                             <tbody class="bg-slate-950 divide-y divide-slate-800">
-                                @forelse ($products as $product)
+                                @forelse ($categories as $category)
                                     <tr class="transition hover:bg-slate-900/75">
                                         <td class="px-6 py-4 text-slate-200">
                                             {{ $loop->iteration }}
                                         </td>
 
                                         <td class="px-6 py-4 font-semibold text-white">
-                                            {{ $product->name }}
+                                            {{ $category->name }}
                                         </td>
 
                                         <td class="px-6 py-4 text-slate-300">
-                                            {{ $product->category->name ?? '-' }}
-                                        </td>
-
-                                        <td class="px-6 py-4">
-                                            <span class="inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wide {{ $product->quantity > 10 ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800' }}">
-                                                {{ $product->quantity }}
-                                            </span>
-                                        </td>
-
-                                        <td class="px-6 py-4 text-slate-200">
-                                            Rp {{ number_format($product->price, 0, ',', '.') }}
-                                        </td>
-
-                                        <td class="px-6 py-4 text-slate-300">
-                                            {{ $product->user->name ?? '-' }}
+                                            {{ $category->products_count }}
                                         </td>
 
                                         <td class="px-6 py-4 text-center">
                                             <div class="inline-flex items-center justify-center gap-3 text-base">
-                                                <a href="{{ route('product.show', $product->id) }}" class="text-sky-400 hover:text-sky-300">👁</a>
-                                                <a href="{{ route('product.edit', $product) }}" class="text-amber-400 hover:text-amber-300">✏️</a>
-                                                <form action="{{ route('product.delete', $product->id) }}" method="POST" onsubmit="return confirm('Delete this product?')" class="inline">
+                                                <a href="{{ route('category.edit', $category) }}" class="text-amber-400 hover:text-amber-300">✏️</a>
+                                                <form action="{{ route('category.destroy', $category) }}" method="POST" onsubmit="return confirm('Delete this category?')" class="inline">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button class="text-rose-400 hover:text-rose-300">🗑</button>
@@ -114,23 +83,16 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="6" class="px-6 py-10 text-center text-slate-400">
-                                            No products found.
+                                        <td colspan="4" class="px-6 py-10 text-center text-slate-400">
+                                            No categories found.
                                         </td>
                                     </tr>
                                 @endforelse
                             </tbody>
                         </table>
                     </div>
-
-                    {{-- Pagination --}}
-                    @if(method_exists($products, 'links'))
-                        <div class="mt-4">
-                            {{ $products->links() }}
-                        </div>
-                    @endif
-
                 </div>
+
             </div>
         </div>
     </div>
